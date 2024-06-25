@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bienvenue dans l'application de calcul d'itinéraire</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <style>
+    .loader {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: 9999;
+        text-align: center;
+    }
+
+    .loader::after {
+        content: "";
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        border: 6px solid #3498db;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+        margin: auto;
+        margin-top: 20%;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+</head>
+<body>
+    <div class="container mt-5 mb-5 p-5 bg-light border border-primary rounded">
+        <h1 class="text-center text-primary mb-4">Bienvenue dans l'application de recherche d'un itinéraire</h1>
+        <p class="text-center text-secondary mb-4">Cette application vous permet de rechercher l'itinéraire le plus court entre deux stations.</p>
+        <form id="calcul-itineraire-form" method="post" action="/calcul_itineraire" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="station-depart" class="font-weight-bold">Station de départ :</label>
+                <select id="station-depart" name="station_depart" class="form-control" required></select>
+                <div class="invalid-feedback">Veuillez sélectionner une station de départ.</div>
+            </div>
+            <div class="form-group">
+                <label for="station-arrivee" class="font-weight-bold">Station d'arrivée :</label>
+                <select id="station-arrivee" name="station_arrivee" class="form-control" required></select>
+                <div class="invalid-feedback">Veuillez sélectionner une station d'arrivée.</div>
+            </div>
+            <div class="form-group">
+                <label for="heure-depart" class="font-weight-bold">Heure de départ (HH:MM) :</label>
+                <input type="text" id="heure-depart" name="heure_depart" class="form-control" required pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$">
+                <div class="invalid-feedback">Veuillez entrer une heure de départ valide (HH:MM).</div>
+            </div>
+            <div class="form-group">
+                <label for="mode-transport" class="font-weight-bold">Mode de transport :</label>
+                <select id="mode-transport" name="mode_transport" class="form-control" required>
+                    <option value="car">Car</option>
+                    <option value="voiture">Voiture</option>
+                    <option value="moto">Moto</option>
+                </select>
+                <div class="invalid-feedback">Veuillez sélectionner un mode de transport.</div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+            
+            <div id="loader" class="loader"></div>
+
+        </form>
+    </div>
+
+  <script>
+    // Remplir les options des stations
+    const stationOptions = [
+        "chateau", "poste", "belibi", "emonbo", "briquetterie",
+        "tsinga", "nkomkana", "melen", "mecc", "mokolo",
+        "nkolbison", "oyomabang", "ekounou", "awai", "essomba",
+        "nkoabang"
+    ];
+    const stationDepart = document.getElementById("station-depart");
+    const stationArrivee = document.getElementById("station-arrivee");
+    stationOptions.forEach((station) => {
+        const option = document.createElement("option");
+        option.value = station;
+        option.text = station;
+        stationDepart.add(option);
+        stationArrivee.add(option.cloneNode(true));
+    });
+
+    // Gestionnaire de l'envoi du formulaire avec loader
+    const form = document.getElementById("calcul-itineraire-form");
+    const loader = document.getElementById("loader");
+
+    form.addEventListener("submit", (event) => {
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            loader.style.display = "block"; // Afficher le loader
+        }
+        form.classList.add("was-validated");
+    });
+
+    // Cacher le loader lorsque la réponse est reçue
+    document.addEventListener("DOMContentLoaded", () => {
+        loader.style.display = "none";
+    });
+</script>
+
+
+</body>
+</html>
+
